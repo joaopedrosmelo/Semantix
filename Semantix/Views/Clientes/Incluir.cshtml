@@ -1,0 +1,78 @@
+﻿@model Semantix.Models.DTO.ClienteDTO
+
+@{
+    ViewData["Title"] = "Incluir";
+}
+
+<h1>Incluir</h1>
+
+<h4>Cliente</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nome" class="control-label"></label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+            <table class="endereco">
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label asp-for="EnderecosDTO[0].Numero" class="control-label"></label>
+                            <input asp-for="EnderecosDTO[0].Numero" class="form-control" />
+                            <span asp-validation-for="EnderecosDTO[0].Numero" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <label asp-for="EnderecosDTO[0].CEP" class="control-label"></label>
+                            <input asp-for="EnderecosDTO[0].CEP" class="form-control" />
+                            <span asp-validation-for="EnderecosDTO[0].CEP" class="text-danger"></span>
+                        </div>
+                    </td>
+                </tr>
+                <a href="javascript:void(0)" class="mais-endereco">+ Endereco</a>
+            </table>
+            <table class="telefone">
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label asp-for="TelefonesDTO[0].Numero" class="control-label"></label>
+                            <input asp-for="TelefonesDTO[0].Numero" class="form-control" />
+                            <span asp-validation-for="TelefonesDTO[0].Numero" class="text-danger"></span>
+                        </div>
+                    </td>
+                </tr>
+                <a href="javascript:void(0)" class="mais-telefone">+ Telefone</a>
+            </table>
+            <div class="form-group">
+                <input type="submit" value="Incluir" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var endereco = 0;
+        var telefone = 0;
+        $('.mais-endereco').click(function (e) {
+            endereco++;
+            e.preventDefault();
+            $('table.endereco').append('<tr><td><div class="form-group"><input type="text" name="EnderecosDTO[' + endereco + '].Numero" class="form-control" /></div></td><td><div class="form-group"><input type="text" name="EnderecosDTO[' + endereco + '].CEP" class="form-control" /></div></td></tr>');
+        });
+        $('.mais-telefone').click(function (e) {
+            telefone++;
+            e.preventDefault();
+            $('table.telefone').append('<tr><td><div class="form-group"><input type="text" name="TelefonesDTO[' + telefone + '].Numero" class="form-control" /></div></td></tr>');
+        });
+    </script>
+}

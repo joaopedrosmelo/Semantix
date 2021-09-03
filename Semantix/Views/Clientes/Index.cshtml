@@ -1,0 +1,103 @@
+﻿@model Semantix.Models.DTO.ClienteDTO
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Clientes</h1>
+
+    @foreach (var cliente in ViewBag.Clientes)
+    {
+        <form asp-action="Edit" style="text-align: left;">
+            <ul style="text-align: left;">
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label"></label>
+                    <input asp-for="Nome" class="form-control" value="@cliente.Nome" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <table>
+                    @{ var x = 0; }
+                    @foreach (var endereco in cliente.EnderecosDTO)
+                    {
+                        <div class="form-group">
+                            <tr>
+                                <td>
+                                    <label asp-for="EnderecosDTO[x].CEP" class="control-label"></label>
+                                    <input asp-for="EnderecosDTO[x].CEP" class="form-control cep" data-id="@endereco.Cod" value="@endereco.CEP" onkeyup="BuscaCEP(this)" />
+                                    <span asp-validation-for="EnderecosDTO[x].CEP" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <label asp-for="EnderecosDTO[x].Logradouro" class="control-label"></label>
+                                    <input asp-for="EnderecosDTO[x].Logradouro" class="form-control logradouro" data-id="@endereco.Cod" value="@endereco.Logradouro" disabled />
+                                    <span asp-validation-for="EnderecosDTO[x].Logradouro" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <label asp-for="EnderecosDTO[x].Numero" class="control-label"></label>
+                                    <input asp-for="EnderecosDTO[x].Numero" class="form-control numero" data-id="@endereco.Cod" value="@endereco.Numero" />
+                                    <span asp-validation-for="EnderecosDTO[x].Numero" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <label asp-for="EnderecosDTO[x].Localidade" class="control-label"></label>
+                                    <input asp-for="EnderecosDTO[x].Localidade" class="form-control localidade" data-id="@endereco.Cod" value="@endereco.Localidade" disabled />
+                                    <span asp-validation-for="EnderecosDTO[x].Localidade" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <label asp-for="EnderecosDTO[x].UF" class="control-label"></label>
+                                    <input asp-for="EnderecosDTO[x].UF" class="form-control uf" data-id="@endereco.Cod" value="@endereco.UF" disabled />
+                                    <span asp-validation-for="EnderecosDTO[x].UF" class="text-danger"></span>
+                                </td>
+                                <input type="hidden" asp-for="EnderecosDTO[x].Cod" value="@endereco.Cod" />
+                            </tr>
+                        </div>
+                        x++;
+                    }
+                </table>
+                <table>
+                    @{ x = 0; }
+                    @foreach (var telefone in cliente.TelefonesDTO)
+                    {
+                        <div class="form-group">
+                            <tr>
+                                <td>
+                                    <label asp-for="TelefonesDTO[x].Numero" class="control-label"></label>
+                                    <input asp-for="TelefonesDTO[x].Numero" class="form-control" data-id="@telefone.Cod" value="@telefone.Numero" />
+                                    <span asp-validation-for="TelefonesDTO[x].Numero" class="text-danger"></span>
+                                </td>
+                                <input type="hidden" asp-for="TelefonesDTO[x].Cod" value="@telefone.Cod" />
+                            </tr>
+                        </div>
+                        x++;
+                    }
+                </table>
+            </ul>
+            <input type="hidden" asp-for="Cod" value="@cliente.Cod" />
+            <input type="submit" value="Salvar" class="btn btn-primary" /><br />
+        </form>
+        <form asp-action="Delete" style="text-align: left;">
+            <input type="hidden" asp-for="Cod" value="@cliente.Cod" />
+            <input type="submit" value="Excluir" class="btn btn-danger" />
+        </form>
+        <hr />
+
+    }
+</div>
+@section Scripts {
+    <script>
+        $('.cep').mask('00000000');
+        function BuscaCEP(campo) {
+            if (campo.value.length > 7) {
+                var dataid = $(campo).attr("data-id");
+                $(campo).prop("disabled", true);
+                $.ajax({
+                    method: "GET",
+                    url: "https://viacep.com.br/ws/" + campo.value + "/json"
+                }).done(function (response, textStatus, jqXHR) {
+                    $(".logradouro[data-id=" + dataid + "]").val(response.logradouro);
+                    $(".localidade[data-id=" + dataid + "]").val(response.localidade);
+                    $(".uf[data-id=" + dataid + "]").val(response.uf);
+                    $(campo).prop("disabled", false);
+                });
+            }
+        }
+    </script>
+}
